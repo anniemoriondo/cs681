@@ -1,3 +1,5 @@
+package hw1;
+
 import java.util.LinkedList;
 
 public abstract class Observable {
@@ -20,7 +22,7 @@ public abstract class Observable {
     // Reset changed status
     public void clearChanged(){ changed = false; }
 
-    // Indicates whether this Observable has changed
+    // Indicates whether this hw1.Observable has changed
     public boolean hasChanged(){ return this.changed; }
 
     // Notifies all observers
@@ -30,8 +32,8 @@ public abstract class Observable {
         }
     }
 
-    // Put the client code in main - StockQuoteObservable etc.
-
-    // What _is_ an abstract class?
+    public static void main(String[] args){
+        // Test code
+    }
 
 }
