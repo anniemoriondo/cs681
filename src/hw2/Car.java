@@ -1,6 +1,7 @@
 package hw2;
 
 import java.util.LinkedList;
+import java.util.stream.Stream;
 
 // The Car class - exactly as present in CS 680 HW 14.
 public class Car {
@@ -77,12 +78,19 @@ public class Car {
 
 
     public static void main(String[] args){
+
+        // Sample cars to sort.
+        LinkedList<Car> cars = new LinkedList<>();
+        cars.add( new Car("Ford", "Fusion", 0, 2021, 40000));
+        cars.add( new Car("Subaru", "Forester", 90000, 2017, 30000));
+        cars.add( new Car("Toyota", "Corolla", 20000, 2020, 45000));
+        cars.add( new Car("Ford", "Explorer", 10000, 2019, 50000));
+        cars.add( new Car("Chevrolet", "Camaro", 80000, 2010, 75000));
+        // TODO finish this assignment
+
         // Sorting the cars using Stream API and lambda expressions.
-        Car car1 = new Car("Ford", "Fusion", 0, 2021, 40000);
-        Car car2 = new Car("Subaru", "Forester", 90000, 2017, 30000);
-        Car car3 = new Car("Toyota", "Corolla", 20000, 2020, 45000);
-        Car car4 = new Car("Ford", "Explorer", 10000, 2019, 50000);
-        Car car5 = new Car("Chevrolet", "Camaro", 80000, 2010, 75000);
+        System.out.println("Hello world");
+        System.out.println(cars.size());
 
     }
 }
