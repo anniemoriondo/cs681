@@ -1,0 +1,8 @@
+Time to generate 148933 primes (by Ant total time metric)
+
+Threads     Time(sec)
+1           11
+2           9
+4           8
+8           8
+16          8
