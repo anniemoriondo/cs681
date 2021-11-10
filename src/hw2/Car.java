@@ -88,7 +88,6 @@ public class Car {
         cars.add( new Car("Toyota", "Corolla", 20000, 2020, 45000));
         cars.add( new Car("Ford", "Explorer", 10000, 2019, 50000));
         cars.add( new Car("Chevrolet", "Camaro", 80000, 2010, 75000));
-        // TODO finish this assignment
 
         // Sorting the cars using Stream API and lambda expressions.
 
