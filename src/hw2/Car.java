@@ -1,6 +1,8 @@
 package hw2;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 // The Car class - exactly as present in CS 680 HW 14.
@@ -89,8 +91,19 @@ public class Car {
         // TODO finish this assignment
 
         // Sorting the cars using Stream API and lambda expressions.
-        System.out.println("Hello world");
-        System.out.println(cars.size());
+
+        // Sort policy 1: Sort the cars from least to most mileage
+        List<Car> ascendingMileage = cars.stream()
+                .sorted((Car car1, Car car2) ->
+                        car1.getMileage() - car2.getMileage() )
+                .collect(Collectors.toList());
+
+        // Verify sort by ascending mileage
+        System.out.println("Ascending mileage:");
+        for (Car thisCar : ascendingMileage) {
+            System.out.println(thisCar.getMakeAndModel() + " - "
+                    + thisCar.getMileage() + " miles");
+        }
 
     }
 }
