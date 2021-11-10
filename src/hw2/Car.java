@@ -105,5 +105,44 @@ public class Car {
                     + thisCar.getMileage() + " miles");
         }
 
+        // Sort policy 2: Sort the cars from newest to oldest
+        List<Car> descendingYear = cars.stream()
+                .sorted((Car car1, Car car2) -> car2.getYear() - car1.getYear())
+                .collect(Collectors.toList());
+
+        // Verify sort by descending year (i.e. newest to oldest)
+        System.out.println("\nNewest to oldest:");
+        for (Car thisCar : descendingYear) {
+            System.out.println(thisCar.getYear() + " " +
+                    thisCar.getMakeAndModel());
+        }
+
+        // Sort policy 3: Sort the cars from least to most expensive
+        List<Car> ascendingPrice = cars.stream()
+                .sorted((Car car1, Car car2)
+                        -> car1.getPrice() - car2.getPrice())
+                .collect(Collectors.toList());
+
+        // Verify sort by ascending price
+        System.out.println("\nLeast to most expensive:");
+        for (Car thisCar : ascendingPrice) {
+            System.out.println(thisCar.getMakeAndModel() + " - $"
+                + thisCar.getPrice());
+        }
+
+        // Sorting policy 4: Pareto sort (ascending domination count)
+        computeDominationCounts(cars);
+        List<Car> paretoSorted = cars.stream()
+                .sorted((Car car1, Car car2) ->
+                        car1.getDominationCount() - car2.getDominationCount()
+                ).collect(Collectors.toList());
+
+        // Verify sort by ascending domination count
+        System.out.println("\nPareto sort (# of cars that dominate):");
+        for(Car thisCar : paretoSorted){
+            System.out.println(thisCar.getMakeAndModel() + " ("
+                + thisCar.getDominationCount() + ")");
+        }
+
     }
 }
