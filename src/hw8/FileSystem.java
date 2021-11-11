@@ -1,6 +1,7 @@
 package hw8;
 
 // From CS 680 Notes 13
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -41,12 +42,13 @@ public class FileSystem implements Runnable {
     }
 
     public static void main(String[] args){
-        // Verify concurrent singleton
-        FileSystem fs1 = new FileSystem();
-        FileSystem fs2 = new FileSystem();
+        // Tests adapted from CS680 HW08 test classes.
 
-        // Multiple threads should all be accessing same instance
-        System.out.println("Same instance?");
+        // Verify concurrent singleton
+        FileSystem fs1 = SampleFileSystem.createFS();
+        FileSystem fs2 = SampleFileSystem.createFS();
+
+
         Thread t1 = new Thread(fs1);
         Thread t2 = new Thread(fs2);
 
@@ -57,8 +59,50 @@ public class FileSystem implements Runnable {
             t1.join();
             t2.join();
 
+            // Multiple threads should all be accessing same instance
+            System.out.println("Same instance?");
             System.out.println(fs1.getFileSystem());
             System.out.println(fs2.getFileSystem());
+
+            System.out.println("\nSame root dir?");
+            System.out.println(fs1.getRootDirs().getFirst().getName());
+            System.out.println(fs2.getRootDirs().getFirst().getName());
+
+            // Checking to make sure changes are reflected on both threads
+            Directory home1 = (Directory) fs1.getRootDirs().getFirst()
+                    .getChildren().get(1);
+            Directory home2 = (Directory) fs2.getRootDirs().getFirst()
+                    .getChildren().get(1);
+
+            System.out.println("Thread 1:");
+            for (FSElement childElem : home1.getChildren()){
+                System.out.println(childElem.getName());
+            }
+            System.out.println(home1.countChildren());
+
+            System.out.println("\nThread 2:");
+            for (FSElement childElem : home2.getChildren()){
+                System.out.println(childElem.getName());
+            }
+            System.out.println(home2.countChildren());
+
+            System.out.println("\nAdding dir on thread 1.");
+            home1.appendChild(
+                    new Directory(home1, "Budget", LocalDateTime.now()));
+
+            System.out.println("Thread 1:");
+            for (FSElement childElem : home1.getChildren()){
+                System.out.println(childElem.getName());
+            }
+            System.out.println(home1.countChildren());
+
+            System.out.println("\nThread 2:");
+            for (FSElement childElem : home2.getChildren()){
+                System.out.println(childElem.getName());
+            }
+            System.out.println(home2.countChildren());
+
+
         } catch (InterruptedException e){
             e.printStackTrace();
         }
