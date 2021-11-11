@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="hw5" basedir="." default="run">
+<project name="hw6" basedir="." default="run">
     <property environment="env"/>
     <echo message="ANT_HOME: ${env.ANT_HOME}"/>
 
@@ -20,15 +20,13 @@
     <target name="compile" depends="init">
         <javac srcdir="${src}" destdir="${bin}" includeantruntime="No">
             <classpath refid="classpath"/>
-            <include name="hw5/*.java"/>
+            <include name="hw6/*.java"/>
         </javac>
     </target>
 
     <!-- And run -->
     <target name="run" depends="compile">
-        <java classname="hw5.PrimeGenOneThread" classpathref="classpath" fork="true"/>
-        <java classname="hw5.PrimeGenTwoThreads" classpathref="classpath" fork="true"/>
-        <java classname="hw5.PrimeGenFourThreads" classpathref="classpath" fork="true"/>
+        <java classname="hw6.RunnablePrimeFactorizer" classpathref="classpath" fork="true"/>
     </target>
 
 </project>
