@@ -3,9 +3,7 @@ package hw4;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -43,63 +41,61 @@ public class CovidDailyData {
         }
     }
 
+    // Getter method for data.
+    public List<List<String>> getData(){ return data;}
+
+    // Get a list of all the data for counties in one particular state.
     public List<List<String>> getStateData(String state){
-        // Get a list of all the data for counties in one particular state.
+        // Returns an empty stream if the search string is not a state.
         return data.stream().filter(value -> value.get(3).equals(state))
                 .collect(Collectors.toList());
     }
 
-    public double stateAverage(String state){
-        // Get all counties in this state
-        List<List<String>> thisState = getStateData(state);
-        // Parse the scores as doubles
-        Double avgForCounties = thisState.stream()
-                .map((List<String> values) -> Double.parseDouble(values.get(0)))
-                .reduce();
-        return 0;
-    }
-
-    // Getter method for data.
-    public List<List<String>> getData(){ return data;}
-
-    // Alphabetizes by state / county.
-    public void alphabetizeByCounty(){
-        data = data.stream().sorted(
-                (List<String> county1, List<String> county2) ->
-                    // "State + County" is item 21 in the dataset
-                    county1.get(21).compareTo(county2.get(21))
-                ).collect(Collectors.toList());
-    }
-
-    public boolean countiesMatch(CovidDailyData that){
-        this.alphabetizeByCounty();
-        that.alphabetizeByCounty();
-
-        for(int i = 0; i < this.data.size(); i++){
-            if (this.data.get(i).get(21) != that.getData().get(i).get(21)){
-                System.out.println( "Mismatch in position " + i);
-                return false;
-            }
+    // Get a map of county names to scores for one particular state.
+    public HashMap<String, Double> stateScoresByCounty(String state){
+        List<List<String>> stateData = getStateData(state);
+        HashMap<String, Double> scores = new HashMap<>();
+        for (List<String> county : stateData){
+            // Store the county name and its score
+            String name = county.get(4);
+            Double score = Double.parseDouble(county.get(0));
+            scores.put(name, score);
         }
-        return true;
+        return scores;
     }
 
+    public Double averageScoreForState(String state){
+        // Returns average score for all counties in state.
+        HashMap<String, Double> stateScores = stateScoresByCounty(state);
+        Double sum = 0.0;
+        for (String key : stateScores.keySet()){ sum += stateScores.get(key);}
+        return sum / stateScores.size();
+    }
 
     public static void main(String[] args){
         String testPath = "hw4_testdata/Model_12.4_20211110_results.csv";
         CovidDailyData testData = new CovidDailyData(testPath);
 
         String testPath2 = "hw4_testdata/Model_12.4_20210113_results.csv";
-        CovidDailyData testData2 = new CovidDailyData(testPath2);
+        CovidDailyData testDataOld = new CovidDailyData(testPath2);
 
-        testData.alphabetizeByCounty();
+        // Has Massachusetts improved as a state over this calendar year?
+        System.out.println("MA Jan 13: "
+                + testDataOld.averageScoreForState("Massachusetts"));
+        System.out.println("MA Nov 10: "
+                + testData.averageScoreForState("Massachusetts"));
 
-        System.out.println(testData.stateAverage("Massachusetts"));
-        String myNumber = "0.59329";
-        Double myNumberAgain = Double.parseDouble(myNumber);
-        System.out.println(myNumberAgain + 0.5);
+        // Has Washington improved as a state over this calendar year?
+        System.out.println("\nWA Jan 13: "
+                + testDataOld.averageScoreForState("Washington"));
+        System.out.println("WA Nov 10: "
+                + testData.averageScoreForState("Washington"));
 
-
+        // Has Texas improved as a state over this calendar year?
+        System.out.println("\nTX Jan 13: "
+                + testDataOld.averageScoreForState("Texas"));
+        System.out.println("TX Nov 10: "
+                + testData.averageScoreForState("Texas"));
 
     }
 
