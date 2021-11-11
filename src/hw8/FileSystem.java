@@ -25,11 +25,17 @@ public class FileSystem {
     }
 
     public LinkedList<Directory> getRootDirs(){
-        return this.rootDirs;
+        // Thread-safe access to rootDirs
+        lock.lock();
+        try{return this.rootDirs;} finally { lock.unlock(); }
+
     }
 
     public void appendRootDir(Directory root){
-        this.rootDirs.add(root);
+        // Thread-safe access to rootDirs
+        lock.lock();
+        try { this.rootDirs.add(root); } finally { lock.unlock();
+        }
     }
 
 }
