@@ -79,33 +79,59 @@ public class FileSystem implements Runnable {
             Directory home2 = (Directory) fs2.getRootDirs().getFirst()
                     .getChildren().get(1);
 
-            System.out.println("Thread 1:");
+            System.out.println("Home 1:");
             for (FSElement childElem : home1.getChildren()){
                 System.out.println(childElem.getName());
             }
             System.out.println(home1.countChildren());
 
-            System.out.println("\nThread 2:");
+            System.out.println("\nHome 2:");
+
             for (FSElement childElem : home2.getChildren()){
                 System.out.println(childElem.getName());
             }
             System.out.println(home2.countChildren());
 
-            System.out.println("\nAdding dir on thread 1.");
+            System.out.println("\nAdding dir on FS 1.");
             Directory budget =
                     new Directory(home1, "Budget", LocalDateTime.now());
 
-            System.out.println("Thread 1:");
+            System.out.println("Home 1:");
             for (FSElement childElem : home1.getChildren()){
                 System.out.println(childElem.getName());
             }
             System.out.println(home1.countChildren());
 
-            System.out.println("\nThread 2:");
+            System.out.println("\nHome 2:");
             for (FSElement childElem : home2.getChildren()){
                 System.out.println(childElem.getName());
             }
             System.out.println(home2.countChildren());
+
+            System.out.println("\nHome1 Size: " + home1.getTotalSize());
+            System.out.println("Home2 Size: " + home2.getTotalSize());
+
+            System.out.println("\nAdd a file of size 200");
+            File budget2022 = new File(budget, "2022 Budget", 200,
+                    LocalDateTime.now());
+            System.out.println("Home1 Size: " + home1.getTotalSize());
+            System.out.println("Home2 Size: " + home2.getTotalSize());
+
+            Link goToBudget = new Link(home1.getSubDirectories().getFirst(),
+                    "Go to Budget", LocalDateTime.now(), budget);
+
+            // Verify that directory link contents match
+            System.out.println("\nLinks (Home 1 first subdir):");
+            for(Link thisLink :
+                    home1.getSubDirectories().getFirst().getLinks()){
+                System.out.println(thisLink.getName());
+            }
+
+            System.out.println("Links (Home 2 first subdir):");
+            for(Link thisLink :
+                    home2.getSubDirectories().getFirst().getLinks()){
+                System.out.println(thisLink.getName());
+            }
 
 
         } catch (InterruptedException e){
