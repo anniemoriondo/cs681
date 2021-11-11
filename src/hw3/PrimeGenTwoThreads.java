@@ -1,6 +1,8 @@
 package hw3;
 
 
+import hw5.RunnablePrimeGenerator;
+
 public class PrimeGenTwoThreads {
 
     public static void main(String[] args){

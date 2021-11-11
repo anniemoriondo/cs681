@@ -1,4 +1,6 @@
-package hw3;
+package hw5;
+
+import hw3.PrimeGenerator;
 
 // RunnablePrimeGenerator class as provided by Prof. Suzuki
 public class RunnablePrimeGenerator extends PrimeGenerator implements Runnable {
