@@ -3,10 +3,12 @@ package hw4;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 public class CovidDailyData {
@@ -41,11 +43,26 @@ public class CovidDailyData {
         }
     }
 
+    public List<List<String>> getStateData(String state){
+        // Get a list of all the data for counties in one particular state.
+        return data.stream().filter(value -> value.get(3).equals(state))
+                .collect(Collectors.toList());
+    }
+
+    public double stateAverage(String state){
+        // Get all counties in this state
+        List<List<String>> thisState = getStateData(state);
+        // Parse the scores as doubles
+        Double avgForCounties = thisState.stream()
+                .map((List<String> values) -> Double.parseDouble(values.get(0)))
+                .reduce();
+        return 0;
+    }
+
     // Getter method for data.
     public List<List<String>> getData(){ return data;}
 
-    // Alphabetizes by county. Can be used to compare across files,
-    // as the same list of counties is maintained throughout study.
+    // Alphabetizes by state / county.
     public void alphabetizeByCounty(){
         data = data.stream().sorted(
                 (List<String> county1, List<String> county2) ->
@@ -68,7 +85,6 @@ public class CovidDailyData {
     }
 
 
-
     public static void main(String[] args){
         String testPath = "hw4_testdata/Model_12.4_20211110_results.csv";
         CovidDailyData testData = new CovidDailyData(testPath);
@@ -78,9 +94,10 @@ public class CovidDailyData {
 
         testData.alphabetizeByCounty();
 
-        for (List<String> item: testData.getData()){ System.out.println(item.get(21)); }
-
-        System.out.println(testData.countiesMatch(testData2));
+        System.out.println(testData.stateAverage("Massachusetts"));
+        String myNumber = "0.59329";
+        Double myNumberAgain = Double.parseDouble(myNumber);
+        System.out.println(myNumberAgain + 0.5);
 
 
 
