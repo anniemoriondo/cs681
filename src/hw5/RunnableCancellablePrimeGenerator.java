@@ -11,19 +11,27 @@ public class RunnableCancellablePrimeGenerator extends RunnablePrimeGenerator {
     }
 
     public void setDone(){
-        done = true;
+        // Thread-safe access to done boolean.
+        lock.lock();
+        try { done = true;}
+        finally {lock.unlock();}
+
     }
 
     public void generatePrimes(){
-        for (long n = from; n <= to; n++) {
-            // Stop generating prime numbers if done==true
-            if(done){
-                System.out.println("Stopped generating prime numbers.");
-                this.primes.clear();
-                break;
+        lock.lock();
+        try {
+            for (long n = from; n <= to; n++) {
+                // Stop generating prime numbers if done==true
+                if(done){
+                    System.out.println("Stopped generating prime numbers.");
+                    this.primes.clear();
+                    break;
+                }
+                if( isPrime(n) ){ this.primes.add(n); }
             }
-            if( isPrime(n) ){ this.primes.add(n); }
-        }
+        } finally { lock.unlock(); }
+
     }
 
     public static void main(String[] args) {
