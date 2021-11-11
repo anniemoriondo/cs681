@@ -13,6 +13,7 @@ public class RunnablePrimeFactorizer extends PrimeFactorizer
     public void run(){ generatePrimeFactors(); }
 
     public static void main(String[] args){
+        System.out.println("RunnablePrimeFactorizer:");
         // Dividends
         long test1 = 24;
         long test2 = 37;

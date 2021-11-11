@@ -26,7 +26,10 @@
 
     <!-- And run -->
     <target name="run" depends="compile">
-        <java classname="hw6.RunnablePrimeFactorizer" classpathref="classpath" fork="true"/>
+        <java classname="hw6.RunnablePrimeFactorizer"
+              classpathref="classpath" fork="true"/>
+        <java classname="hw6.RunnableCancellablePrimeFactorizer"
+              classpathref="classpath" fork="true"/>
     </target>
 
 </project>
