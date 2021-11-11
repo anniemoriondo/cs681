@@ -45,7 +45,7 @@ public class Link extends FSElement {
 
     public int targetSize(){
         // Returns target's total size if it's a directory; else return its size
-        // Thread-safe acces
+        // Thread-safe access
         lock.lock();
         try {
             return target.isDirectory() ?

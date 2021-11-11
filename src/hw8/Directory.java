@@ -9,23 +9,35 @@ public class Directory extends FSElement {
     public Directory(Directory parent, String name, LocalDateTime creationTime){
         // File size of directory is always 0
         super(parent, name, 0, creationTime);
-        if (parent != null){ parent.appendChild(this); }
+        // Thread safe access to LinkedList
+        lock.lock();
+        try {
+            if (parent != null){ parent.appendChild(this); }
+        } finally { lock.unlock(); }
     }
 
     public LinkedList<FSElement> getChildren(){
-        return this.children;
+        // Thread safe access to LinkedList
+        lock.lock();
+        try { return this.children; } finally { lock.unlock(); }
     }
 
     public void appendChild(FSElement newChild){
-        this.children.add(newChild);
+        // Thread safe access to LinkedList
+        lock.lock();
+        try {this.children.add(newChild);} finally { lock.unlock(); }
     }
 
     public int countChildren(){
-        return this.children.size();
+        // Thread safe access to LinkedList
+        lock.lock();
+        try { return this.children.size();} finally { lock.unlock(); }
     }
 
+    // Already atomic
     public boolean isDirectory() { return true; }
 
+    // Already atomic
     public boolean isLink() { return false; }
 
     /**
@@ -33,13 +45,17 @@ public class Directory extends FSElement {
      * @return LinkedList of all children which are Directories
      */
     public LinkedList<Directory> getSubDirectories(){
-        LinkedList<Directory> subDirectories = new LinkedList<>();
-        for (FSElement thisElem : this.children){
-            if (thisElem.isDirectory()){
-                subDirectories.add((Directory) thisElem);
+        // Thread safe access to LinkedList
+        lock.lock();
+        try {
+            LinkedList<Directory> subDirectories = new LinkedList<>();
+            for (FSElement thisElem : this.children){
+                if (thisElem.isDirectory()){
+                    subDirectories.add((Directory) thisElem);
+                }
             }
-        }
-        return subDirectories;
+            return subDirectories;
+        } finally { lock.unlock(); }
     }
 
     /**
@@ -47,13 +63,17 @@ public class Directory extends FSElement {
      * @return LinkedList of all children which are Files
      */
     public LinkedList<File> getFiles(){
-        LinkedList<File> files = new LinkedList<>();
-        for (FSElement thisElem : this.children){
-            if (!thisElem.isDirectory() && !thisElem.isLink()){
-                files.add((File) thisElem);
+        // Thread safe access to LinkedList
+        lock.lock();
+        try {
+            LinkedList<File> files = new LinkedList<>();
+            for (FSElement thisElem : this.children){
+                if (!thisElem.isDirectory() && !thisElem.isLink()){
+                    files.add((File) thisElem);
+                }
             }
-        }
-        return files;
+            return files;
+        } finally { lock.unlock(); }
     }
 
     /**
@@ -61,13 +81,17 @@ public class Directory extends FSElement {
      * @return LinkedList of all children which are Links
      */
     public LinkedList<Link> getLinks(){
-        LinkedList<Link> links = new LinkedList<>();
-        for (FSElement thisElem : this.children){
-            if (thisElem.isLink()){
-                links.add((Link) thisElem);
+        // Thread safe access to LinkedList
+        lock.lock();
+        try {
+            LinkedList<Link> links = new LinkedList<>();
+            for (FSElement thisElem : this.children){
+                if (thisElem.isLink()){
+                    links.add((Link) thisElem);
+                }
             }
-        }
-        return links;
+            return links;
+        } finally { lock.unlock(); }
     }
 
     /**
@@ -75,15 +99,19 @@ public class Directory extends FSElement {
      * @return int representing total directory size
      */
     public int getTotalSize(){
-        int totalSize = 0;
-        for (FSElement thisChild : this.getChildren()){
-            if (thisChild.isDirectory()){
-                totalSize += ((Directory)thisChild).getTotalSize();
-            } else {
-                totalSize += thisChild.getSize();
+        // Thread safe access to LinkedList
+        lock.lock();
+        try {
+            int totalSize = 0;
+            for (FSElement thisChild : this.getChildren()){
+                if (thisChild.isDirectory()){
+                    totalSize += ((Directory)thisChild).getTotalSize();
+                } else {
+                    totalSize += thisChild.getSize();
+                }
             }
-        }
-        return totalSize;
+            return totalSize;
+        } finally { lock.unlock(); }
     }
 
     public static void main(String[] args){
