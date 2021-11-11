@@ -26,9 +26,14 @@ public class CovidDailyData {
                                     // Get rid of unnecessary quotation marks
                                     .replace("\"", ""))
                             // Inner nested list
-                            .collect(Collectors.toList());
+                            .collect(Collectors.toList()); })
                     // Outer nested list
-                    }).collect(Collectors.toList());
+                    .map(value -> {
+                        // Add a single column that has both state and county.
+                        value.add(value.get(3) + " " + value.get(4));
+                        return value;
+                    })
+                    .collect(Collectors.toList());
             headers = matrix.get(0);
             data = matrix.subList(1, matrix.size());
         } catch (IOException ex){
@@ -44,9 +49,22 @@ public class CovidDailyData {
     public void alphabetizeByCounty(){
         data = data.stream().sorted(
                 (List<String> county1, List<String> county2) ->
-                    // County is item 3 in the dataset
-                    county1.get(3).compareTo(county2.get(3))
+                    // "State + County" is item 21 in the dataset
+                    county1.get(21).compareTo(county2.get(21))
                 ).collect(Collectors.toList());
+    }
+
+    public boolean countiesMatch(CovidDailyData that){
+        this.alphabetizeByCounty();
+        that.alphabetizeByCounty();
+
+        for(int i = 0; i < this.data.size(); i++){
+            if (this.data.get(i).get(21) != that.getData().get(i).get(21)){
+                System.out.println( "Mismatch in position " + i);
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -55,12 +73,14 @@ public class CovidDailyData {
         String testPath = "hw4_testdata/Model_12.4_20211110_results.csv";
         CovidDailyData testData = new CovidDailyData(testPath);
 
-        for (List<String> item: testData.getData()){
-            System.out.println(item.get(1) + " " + item.get(2) +
-                    item.get(3) + item.get(4));
-        }
+        String testPath2 = "hw4_testdata/Model_12.4_20210113_results.csv";
+        CovidDailyData testData2 = new CovidDailyData(testPath2);
 
         testData.alphabetizeByCounty();
+
+        for (List<String> item: testData.getData()){ System.out.println(item.get(21)); }
+
+        System.out.println(testData.countiesMatch(testData2));
 
 
 
