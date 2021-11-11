@@ -47,22 +47,27 @@ public class FileSystem implements Runnable {
         // Verify concurrent singleton
         FileSystem fs1 = SampleFileSystem.createFS();
         FileSystem fs2 = SampleFileSystem.createFS();
+        FileSystem fs3 = SampleFileSystem.createFS();
 
 
         Thread t1 = new Thread(fs1);
         Thread t2 = new Thread(fs2);
+        Thread t3 = new Thread(fs2);
 
         t1.start();
         t2.start();
+        t3.start();
 
         try {
             t1.join();
             t2.join();
+            t3.join();
 
             // Multiple threads should all be accessing same instance
             System.out.println("Same instance?");
             System.out.println(fs1.getFileSystem());
             System.out.println(fs2.getFileSystem());
+            System.out.println(fs3.getFileSystem());
 
             System.out.println("\nSame root dir?");
             System.out.println(fs1.getRootDirs().getFirst().getName());
@@ -87,8 +92,8 @@ public class FileSystem implements Runnable {
             System.out.println(home2.countChildren());
 
             System.out.println("\nAdding dir on thread 1.");
-            home1.appendChild(
-                    new Directory(home1, "Budget", LocalDateTime.now()));
+            Directory budget =
+                    new Directory(home1, "Budget", LocalDateTime.now());
 
             System.out.println("Thread 1:");
             for (FSElement childElem : home1.getChildren()){
