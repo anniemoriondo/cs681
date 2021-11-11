@@ -29,6 +29,8 @@
         <java classname="hw5.PrimeGenOneThread" classpathref="classpath" fork="true"/>
         <java classname="hw5.PrimeGenTwoThreads" classpathref="classpath" fork="true"/>
         <java classname="hw5.PrimeGenFourThreads" classpathref="classpath" fork="true"/>
+        <java classname="hw5.RunnableCancellablePrimeGenerator"
+              classpathref="classpath" fork="true"/>
     </target>
 
 </project>
