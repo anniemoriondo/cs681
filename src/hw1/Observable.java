@@ -1,5 +1,6 @@
 package hw1;
 
+import java.time.Year;
 import java.util.LinkedList;
 
 public abstract class Observable {
@@ -14,7 +15,9 @@ public abstract class Observable {
     public void addObserver(Observer o){ observers.add(o);}
 
     // Delete an observer
-    public void deleteObserver(Observer o){ observers.remove(o);}
+    public void deleteObserver(Observer o){
+        observers.remove(o);
+    }
 
     // Mark that the observable has changed
     public void setChanged(){ changed = true; }
@@ -77,7 +80,7 @@ public abstract class Observable {
                     + ": " + event.getQuote());
         });
 
-        System.out.println("\nShould be just in French:");
+        System.out.println("\nShould be just in French - still shows English?:");
         djiaWatch.changeQuote(34299.12f);
         stockWatch.changeQuote("AAPL", 878.3f);
     }
