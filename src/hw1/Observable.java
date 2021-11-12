@@ -28,7 +28,9 @@ public abstract class Observable {
     // Notifies all observers
     public void notifyObservers(Object obj){
         if (this.hasChanged()){
-
+            for (Observer thisObserver : observers){
+                thisObserver.update(this, obj);
+            }
         }
     }
 
