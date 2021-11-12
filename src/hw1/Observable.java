@@ -35,8 +35,35 @@ public abstract class Observable {
     }
 
     public static void main(String[] args){
-        // Test code
-        // TODO finish this assignment
+        DJIAQuoteObservable djiaWatch = new DJIAQuoteObservable();
+
+        String[] stocks = {"AAPL", "GOOG"};
+        float[] quotes = { 903.5f, 2033.2f};
+        StockQuoteObservable stockWatch = new StockQuoteObservable(stocks, quotes);
+
+        djiaWatch.addObserver((Observable obsl, Object obj) ->
+            System.out.println("New DJIA: " + ((DJIAEvent)obj).getQuote())
+        );
+
+        stockWatch.addObserver((Observable obsl, Object obj) ->{
+            StockEvent event = (StockEvent) obj;
+            System.out.println("Current value of " + event.getTicker()
+                    + ": " + event.getQuote());
+        });
+
+        // Same thing but in French
+        djiaWatch.addObserver((Observable obsl, Object obj) ->
+                System.out.println("Nouvelle DJIA: " + ((DJIAEvent)obj).getQuote())
+        );
+
+        stockWatch.addObserver((Observable obsl, Object obj) ->{
+            StockEvent event = (StockEvent) obj;
+            System.out.println("Valeur de " + event.getTicker()
+                    + ": " + event.getQuote());
+        });
+
+        djiaWatch.changeQuote(34307.84f);
+        stockWatch.changeQuote("GOOG", 1981.0f);
     }
 
 }
