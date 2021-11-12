@@ -64,6 +64,22 @@ public abstract class Observable {
 
         djiaWatch.changeQuote(34307.84f);
         stockWatch.changeQuote("GOOG", 1981.0f);
+
+        // Removing the English observers
+
+        djiaWatch.deleteObserver((Observable obsl, Object obj) ->
+                System.out.println("New DJIA: " + ((DJIAEvent)obj).getQuote())
+        );
+
+        stockWatch.deleteObserver((Observable obsl, Object obj) ->{
+            StockEvent event = (StockEvent) obj;
+            System.out.println("Current value of " + event.getTicker()
+                    + ": " + event.getQuote());
+        });
+
+        System.out.println("\nShould be just in French:");
+        djiaWatch.changeQuote(34299.12f);
+        stockWatch.changeQuote("AAPL", 878.3f);
     }
 
 }
