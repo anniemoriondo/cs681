@@ -69,7 +69,6 @@ public abstract class Observable {
         stockWatch.changeQuote("GOOG", 1981.0f);
 
         // Removing the English observers
-
         djiaWatch.deleteObserver((Observable obsl, Object obj) ->
                 System.out.println("New DJIA: " + ((DJIAEvent)obj).getQuote())
         );
