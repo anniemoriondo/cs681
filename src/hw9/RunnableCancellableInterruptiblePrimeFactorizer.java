@@ -55,6 +55,29 @@ public class RunnableCancellableInterruptiblePrimeFactorizer
     }
 
     public static void main(String[] args){
-
+        RunnableCancellableInterruptiblePrimeFactorizer factorizer =
+                new RunnableCancellableInterruptiblePrimeFactorizer(1024);
+        Thread thread = new Thread(factorizer);
+        thread.start();
+        try{
+          Thread.sleep(3000);
+        } catch (InterruptedException e){
+            System.out.println("Interrupted - 3 sec. sleep");
+            e.printStackTrace();
+        }
+        // Factorizer is done - should react appropriately (clear list of factors)
+        factorizer.setDone();
+        thread.interrupt();
+        try {
+            thread.join();
+        } catch (InterruptedException e){
+            System.out.println("Interrupted - joining thread");
+            e.printStackTrace();
+        }
+        // Print out the factors.
+        factorizer.getPrimeFactors().forEach(
+                (Long factor) -> System.out.println(factor));
+        System.out.println("\n" + factorizer.getPrimeFactors().size()
+            + " factors found.");
     }
 }
