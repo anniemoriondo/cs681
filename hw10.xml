@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project name="hw10" basedir="." default="run">
+    <property environment="env"/>
+    <echo message="ANT_HOME: ${env.ANT_HOME}"/>
+
+    <!-- Sources and binaries -->
+    <property name="src" location="src"/>
+    <property name="bin" location="bin"/>
+
+    <path id="classpath">
+        <pathelement location="bin"/>
+    </path>
+
+    <!-- Directory for binaries - in case it isn't there-->
+    <target name="init">
+        <mkdir dir="${bin}"/>
+    </target>
+
+    <!-- Compile -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src}" destdir="${bin}" includeantruntime="No">
+            <classpath refid="classpath"/>
+            <include name="hw10/*.java"/>
+        </javac>
+    </target>
+
+    <!-- And run -->
+    <target name="run" depends="compile">
+        <java classname="hw10.ConcurrentSingleton"
+              classpathref="classpath" fork="true"/>
+    </target>
+
+</project>
