@@ -27,6 +27,12 @@ public final class Address {
         return this.toString().equals(otherAddress.toString());
     }
 
+    // Not a setter!
+    public Address change(String street, String city, String state,
+                          int zipcode){
+        return new Address(street, city, state, zipcode);
+    }
+
     public static void main(String[] args){
         Address whiteHouse = new Address("1600 Pennsylvania Avenue",
                 "Washington", "DC", 20500);
