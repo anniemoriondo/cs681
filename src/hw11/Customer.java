@@ -19,4 +19,24 @@ public class Customer {
         lock.lock();
         try {return address; } finally { lock.unlock(); }
     }
+
+    public static void main(String[] args){
+        Address address1 = new Address("1600 Pennsylvania Ave NW",
+                "Washington", "DC", 20500);
+        Address address2 = new Address("24 Beacon St", "Boston", "MA", 02133);
+        Customer aCustomer = new Customer(address1);
+
+        Thread t1 = new Thread(() -> { System.out.println("t1: " + aCustomer.getAddress()); });
+        Thread t2 = new Thread(() -> {
+            aCustomer.setAddress(address2);
+            System.out.println("t2: " + aCustomer.getAddress());
+        });
+
+        t1.start();
+        t2.start();
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) { e.printStackTrace();}
+    }
 }

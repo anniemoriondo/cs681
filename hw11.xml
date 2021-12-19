@@ -26,7 +26,7 @@
 
     <!-- And run -->
     <target name="run" depends="compile">
-        <java classname="hw11.Address"
+        <java classname="hw11.Customer"
               classpathref="classpath" fork="true"/>
     </target>
 
