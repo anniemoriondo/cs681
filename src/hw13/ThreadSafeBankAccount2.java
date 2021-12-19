@@ -1,5 +1,6 @@
 package hw13;
 
+import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 
@@ -62,9 +63,39 @@ public class ThreadSafeBankAccount2 implements BankAccount{
 	
 	public static void main(String[] args){
 		ThreadSafeBankAccount2 bankAccount = new ThreadSafeBankAccount2();
+
+		LinkedList<Thread> depositThreads = new LinkedList<>();
+		LinkedList<Thread> withdrawalThreads = new LinkedList<>();
+		LinkedList<DepositRunnable> deposits = new LinkedList<>();
+		LinkedList<WithdrawRunnable> withdrawals = new LinkedList<>();
+
+		// Create and start threads for withdrawal and deposit.
 		for(int i = 0; i < 5; i++){
-			new Thread( new DepositRunnable(bankAccount) ).start();
-			new Thread( new WithdrawRunnable(bankAccount) ).start();
+			DepositRunnable deposit = new DepositRunnable(bankAccount);
+			deposits.add(deposit);
+			Thread depositThread = new Thread(deposit);
+			depositThreads.add(depositThread);
+			depositThread.start();
+
+			WithdrawRunnable withdrawal = new WithdrawRunnable(bankAccount);
+			withdrawals.add(withdrawal);
+			Thread withdrawalThread = new Thread(withdrawal);
+			withdrawalThreads.add(withdrawalThread);
+			withdrawalThread.start();
 		}
+
+		// Two-step thread termination.
+		for(int i = 0; i < 5; i++){
+			DepositRunnable deposit = deposits.get(i);
+			deposit.setDone();
+			Thread depositThread = depositThreads.get(i);
+			depositThread.interrupt();
+
+			WithdrawRunnable withdrawal = withdrawals.get(i);
+			withdrawal.setDone();
+			Thread withdrawalThread = withdrawalThreads.get(i);
+			withdrawalThread.interrupt();
+		}
+
 	}
 }

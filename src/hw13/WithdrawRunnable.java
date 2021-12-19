@@ -3,13 +3,17 @@ package hw13;
 public class WithdrawRunnable implements Runnable{
     private BankAccount account;
 
-    public WithdrawRunnable(BankAccount bankAccount){
-        account = bankAccount;
-    }
+    // Volatile flag.
+    volatile boolean done = false;
+
+    public WithdrawRunnable(BankAccount bankAccount){ account = bankAccount; }
+
+    public void setDone() { done = true; }
 
     @Override
     public void run() {
-        for (int i = 0; i < 10; i++){
+        while (true) {
+            if(done){ break;}
             account.withdraw(100);
         }
     }

@@ -17,8 +17,6 @@ public class RequestHandler implements Runnable{
 
     @Override
     public void run() {
-        //System.out.print("Running: ");
-        //System.out.println(this);
         while(true){
             if(done){ break; }
             try {
