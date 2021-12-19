@@ -1,4 +1,5 @@
-package hw12;
+package hw16;
+
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.Random;
@@ -52,8 +53,8 @@ public class RequestHandler implements Runnable{
         AccessCounter counter = AccessCounter.getInstance();
         for (int fileIndex = 1; fileIndex < 8; fileIndex++){
             Path filePath = Path.of("./file" + fileIndex + ".txt");
-            System.out.println(filePath + " accessed " +
-                    counter.getCount(filePath) + " times.");
+            System.out.println(filePath + " accessed "
+                    + counter.getCount(filePath) + " times.");
         }
     }
 }
