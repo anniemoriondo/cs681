@@ -1,39 +1,55 @@
 package hw15;
 
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class Observable {
 
     private LinkedList<Observer> observers = new LinkedList<Observer>();
 
-    private boolean changed;
+    private AtomicBoolean changed;
+    ReentrantLock lockObs = new ReentrantLock();
 
     public Observable(){}
 
     // Add an observer
-    public void addObserver(Observer o){ observers.add(o);}
+    public void addObserver(Observer o){
+        lockObs.lock();
+        try { observers.add(o);}
+        finally { lockObs.unlock(); }
+    }
 
     // Delete an observer
     public void deleteObserver(Observer o){
-        observers.remove(o);
+        lockObs.lock();
+        try { observers.remove(o);}
+        finally { lockObs.unlock(); }
     }
 
     // Mark that the observable has changed
-    public void setChanged(){ changed = true; }
+    public void setChanged(){ changed.set(true); }
 
     // Reset changed status
-    public void clearChanged(){ changed = false; }
+    public void clearChanged(){ changed.set(false); }
 
     // Indicates whether this hw1.Observable has changed
-    public boolean hasChanged(){ return this.changed; }
+    public boolean hasChanged(){ return this.changed.get(); }
 
     // Notifies all observers
     public void notifyObservers(Object obj){
-        if (this.hasChanged()){
-            for (Observer thisObserver : observers){
-                thisObserver.update(this, obj);
-            }
+        Object[] arrLocal;
+        lockObs.lock();
+        try {
+            if (! this.hasChanged()){return;}
+            arrLocal = observers.toArray();
+        } finally { lockObs.unlock(); }
+
+        // Open call
+        for (int i = arrLocal.length - 1; i >= 0; i--){
+            ((Observer)arrLocal[i]).update(this, obj);
         }
+
     }
 
     public static void main(String[] args){
