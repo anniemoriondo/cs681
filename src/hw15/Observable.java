@@ -30,7 +30,10 @@ public abstract class Observable {
     // Delete an observer by index
     public void deleteObserver(int i){
         lockObs.lock();
-        try { observers.remove(observers.get(i));}
+        try {
+            if (i < observers.size()){
+                observers.remove(observers.get(i));}
+            }
         finally { lockObs.unlock(); }
     }
 
@@ -66,38 +69,44 @@ public abstract class Observable {
         float[] quotes = { 903.5f, 2033.2f};
         StockQuoteObservable stockWatch = new StockQuoteObservable(stocks, quotes);
 
-        djiaWatch.addObserver((Observable obsl, Object obj) ->
-            System.out.println("New DJIA: " + ((DJIAEvent)obj).getQuote())
-        );
-
-        stockWatch.addObserver((Observable obsl, Object obj) ->{
-            StockEvent event = (StockEvent) obj;
-            System.out.println("Current value of " + event.getTicker()
-                    + ": " + event.getQuote());
+        // Thread that adds observers
+        Thread t1 = new Thread(() -> {
+            djiaWatch.addObserver((Observable obsl, Object obj) ->
+                    System.out.println("New DJIA: " + ((DJIAEvent)obj).getQuote())
+            );
+            stockWatch.addObserver((Observable obsl, Object obj) ->{
+                StockEvent event = (StockEvent) obj;
+                System.out.println("Current value of " + event.getTicker()
+                        + ": " + event.getQuote());
+            });
         });
 
-        // Same thing but in French
-        djiaWatch.addObserver((Observable obsl, Object obj) ->
-                System.out.println("Nouvelle DJIA: " + ((DJIAEvent)obj).getQuote())
-        );
+        // Another thread that adds observers and changes the quotes
+        Thread t2 = new Thread(() ->{
+            djiaWatch.addObserver((Observable obsl, Object obj) ->
+                    System.out.println("Nouvelle DJIA: " + ((DJIAEvent)obj).getQuote())
+            );
 
-        stockWatch.addObserver((Observable obsl, Object obj) ->{
-            StockEvent event = (StockEvent) obj;
-            System.out.println("Valeur de " + event.getTicker()
-                    + ": " + event.getQuote());
+            stockWatch.addObserver((Observable obsl, Object obj) ->{
+                StockEvent event = (StockEvent) obj;
+                System.out.println("Valeur de " + event.getTicker()
+                        + ": " + event.getQuote());
+            });
+
+            djiaWatch.changeQuote(34307.84f);
+            stockWatch.changeQuote("GOOG", 1981.0f);
         });
 
-        djiaWatch.changeQuote(34307.84f);
-        stockWatch.changeQuote("GOOG", 1981.0f);
+        // Remove first observer of each observable
+        Thread t3 = new Thread(() -> {
+            djiaWatch.deleteObserver(0);
+            stockWatch.deleteObserver(0);
+        });
 
-        // Removing the English observers
-        djiaWatch.deleteObserver(0);
 
-        stockWatch.deleteObserver(0);
-
-        System.out.println("\nShould be just in French - still shows English?:");
-        djiaWatch.changeQuote(34299.12f);
-        stockWatch.changeQuote("AAPL", 878.3f);
+        t1.start();
+        t2.start();
+        t3.start();
     }
 
 }
