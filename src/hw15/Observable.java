@@ -8,10 +8,10 @@ public abstract class Observable {
 
     private LinkedList<Observer> observers = new LinkedList<Observer>();
 
-    private AtomicBoolean changed;
+    private AtomicBoolean changed = new AtomicBoolean();
     ReentrantLock lockObs = new ReentrantLock();
 
-    public Observable(){}
+    public Observable(){ changed.set(false); }
 
     // Add an observer
     public void addObserver(Observer o){
@@ -24,6 +24,13 @@ public abstract class Observable {
     public void deleteObserver(Observer o){
         lockObs.lock();
         try { observers.remove(o);}
+        finally { lockObs.unlock(); }
+    }
+
+    // Delete an observer by index
+    public void deleteObserver(int i){
+        lockObs.lock();
+        try { observers.remove(observers.get(i));}
         finally { lockObs.unlock(); }
     }
 
@@ -84,15 +91,9 @@ public abstract class Observable {
         stockWatch.changeQuote("GOOG", 1981.0f);
 
         // Removing the English observers
-        djiaWatch.deleteObserver((Observable obsl, Object obj) ->
-                System.out.println("New DJIA: " + ((DJIAEvent)obj).getQuote())
-        );
+        djiaWatch.deleteObserver(0);
 
-        stockWatch.deleteObserver((Observable obsl, Object obj) ->{
-            StockEvent event = (StockEvent) obj;
-            System.out.println("Current value of " + event.getTicker()
-                    + ": " + event.getQuote());
-        });
+        stockWatch.deleteObserver(0);
 
         System.out.println("\nShould be just in French - still shows English?:");
         djiaWatch.changeQuote(34299.12f);
